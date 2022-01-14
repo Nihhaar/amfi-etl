@@ -3,7 +3,8 @@ Data ingestion pipeline to fetch Mutual Fund data from the [AMFI](https://www.am
 ### Run (Virtualenv)
 ```bash
 virtualenv -p /usr/local/opt/python@3.9/bin/python3.9 .venv
-pip3 install -r requirements.txt
+source .venv/bin/activate
+pip3 install -r requirements.txt # make sure you have mysql libs installed
 
 # Start MySQL
 docker-compose -f docker-compose.yml up -d
