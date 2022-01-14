@@ -20,8 +20,9 @@ def load_data(conn_str, from_date, to_date=None):
 
     # Write to DB
     if rows:
-        engine = create_engine(conn_str, connect_args={"timeout": 15})
+        engine = create_engine(conn_str)
         engine.execute(NAV.__table__.insert(), rows)
+        engine.dispose()
 
 
 def setup_dask_cluster():
@@ -31,7 +32,7 @@ def setup_dask_cluster():
         "memory_spill_fraction": False,
         "memory_pause_fraction": False,
     }
-    cluster = LocalCluster(n_workers=2, threads_per_worker=16, **worker_kwargs)
+    cluster = LocalCluster(n_workers=1, threads_per_worker=8, **worker_kwargs)
     client = Client(cluster)
     print(f"Serving dask dashboard at {client.dashboard_link}")
     return client
@@ -66,7 +67,8 @@ def main():
     nav_date = args.nav_date
 
     # SQLite
-    conn_str = "sqlite:///nav.db"
+    # conn_str = "sqlite:///nav.db"
+    conn_str = "mysql://ubuntu:password@127.0.0.1:3306/amfi"
 
     # Full refresh
     if nav_date == "full_refresh":

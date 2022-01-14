@@ -19,16 +19,22 @@ class AMFIParser:
         self.from_date = from_date
         self.to_date = to_date
 
-    def get_data(self):
+    def get_data(self) -> str:
         params = {
             self.FROM_DATE_PARAM: self.from_date.strftime("%Y-%m-%d"),
             self.TO_DATE_PARAM: None if not self.to_date else self.to_date.strftime("%Y-%m-%d"),
         }
-        response = requests.get(self.url, params=params)
-        response.raise_for_status()
+
+        try:
+            response = requests.get(self.url, params=params)
+            response.raise_for_status()
+        except requests.exceptions.Timeout as e1:
+            print(e1)
+        except requests.exceptions.RequestException as e2:
+            raise e2
         return response.text
 
-    def convert_dtypes(self, values):
+    def convert_dtypes(self, values) -> None:
         int_columns_idx = [0]
         float_columns_idx = [4, 5, 6]
         date_columns_idx = [7]
